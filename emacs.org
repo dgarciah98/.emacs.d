@@ -3,7 +3,7 @@ Welcome to my Emacs config file!
 
 * Table of Contents 
 :TOC:
-- [[#global-vars][Globar Variables]]
+- [[#global-vars][Global Variables]]
 - [[#appearance][Appearance]]
   - [[#all-the-icons][All The Icons]]
   - [[#doom-modeline][Doom Modeline]]
@@ -11,7 +11,7 @@ Welcome to my Emacs config file!
   - [[#kaolin-themes][Kaolin Themes]]
 - [[#utilities][Utilities]]
   - [[#aggressive][Aggressive Indent]]
-  - [[#calfw][Calendar]]
+  - [[#calfw][Calendar (calfw)]]
   - [[#company][Company]]
   - [[#dashboard][Dashboard]]
   - [[#flycheck][Flycheck]]
@@ -19,17 +19,17 @@ Welcome to my Emacs config file!
   - [[#lsp][LSP]]
   - [[#neotree][Neotree]]
   - [[#nlinum][Nlinum]]
-  - [[#org][Org Mode]]
-  - [[#orgcal][Org Calendar]]
+  - [[#org-mode][Org Mode]]
+  - [[#org-calendar][Org Calendar]]
   - [[#page-break-lines][Page Break Lines]]
   - [[#projectile][Projectile]]
-  - [[#rainbow-delim][Rainbow Delimiters]]
+  - [[#rainbow-delimiters][Rainbow Delimiters]]
   - [[#ranger][Ranger]]
   - [[#which-key][Whick Key]]
-  - [[#yasnippet][Yasnippets]]
+  - [[#yasnippet][Yasnippet]]
 - [[#programming][Programming]]
-  - [[#cc][C and its Variants]]
-  - [[#mierda][Ciao Prolog]]
+  - [[#c-and-its-variants][C and its Variants]]
+  - [[#ciao-prolog][Ciao Prolog]]
   - [[#platformio][PlatformIO]]
   - [[#rust][Rust]]
 
@@ -109,7 +109,7 @@ Welcome to my Emacs config file!
 #+END_SRC
 
 * Utilities
-** Agressive Indent
+** Aggressive Indent
    
    #+BEGIN_SRC emacs-lisp
      ;; (use-package aggressive-indent
@@ -325,7 +325,7 @@ Welcome to my Emacs config file!
      :config (which-key-mode))
 #+END_SRC
 
-** Yasnippets
+** Yasnippet
    #+BEGIN_SRC emacs-lisp
      (use-package yasnippet
        :ensure ;TODO: 
@@ -369,16 +369,15 @@ Welcome to my Emacs config file!
 #+END_SRC
 
 ** Rust
+
    #+BEGIN_SRC emacs-lisp
      (use-package toml-mode
        :ensure t)
      (use-package cargo
        :ensure t
        :hook (rust-mode . cargo-minor-mode))
-#+END_SRC
-
-
+   #+END_SRC
 
 ----
 
-[[#emacs.org][Back to top]]
+[[#title][Back to top]]
