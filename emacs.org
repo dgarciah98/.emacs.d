@@ -1,4 +1,4 @@
-#+title: init.org
+#+title: emacs.org
 Welcome to my Emacs config file!
 
 * Table of Contents 
@@ -381,4 +381,4 @@ Welcome to my Emacs config file!
 
 ----
 
-[[#init][Back to top]]
+[[#emacs.org][Back to top]]
