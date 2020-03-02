@@ -1,20 +1,58 @@
 # .emacs.d
 
-Welcome to my Emacs config file!
+Welcome to my Emacs config repo!
 
-As of now, my current setup consists of an ``.emacs`` file in my home directory, which mainly just loads the main config file ``init.el`` :
+I managed to build my config file into an ``org`` file using ``org-babel`` that you can check in a nifty page with comments!
+However, Emacs still needs an ``.el`` file to load, then read all the code blocks from the ``org`` file and tangle them into
+another ``elisp`` file that Emacs can evaluate.
 
+Therefore, I have to set up Emacs before reading my main configuration file.
 
+## Pre-Setup
+
+```emacs
+;;; init.el --- Pre-Setup
+;;; Commentary:
+;;; Code:
+
+(require 'package)
+(add-to-list
+ 'package-archives
+ '("melpa" . "http://melpa.org/packages/")
+ '("gnu" . "http://elpa.gnu.org/packages/"))
+(package-initialize)
+
+(unless (featurep 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-when-compile (require 'use-package))
 ```
-;; Main Configuration
-(load-file "~/.emacs.d/init.el")
 
-;; Custom Variablea
+First I add the main package repositories and make sure that ``use-package`` is installed, for proper package managing.
+
+```emacs
+(use-package org
+  :ensure t)
+```
+
+Followed by making sure that ``org`` is installed, otherwise I can't load my config file.
+
+```emacs
+;; Main Configuration
+
+;;(load-file "~/.emacs.d/init.el")
+(org-babel-load-file (expand-file-name "emacs.org" user-emacs-directory))
+
+;; Custom Variables
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
+
+;;; init.el ends here
 ```
 
-...which nowadays may be redundant. Therefore my goal will be making my ``init.el`` into a literate file using ``org-babel``, thus making proper documemtation for my configuration.
+And lastly I load the ``org`` file along with an ``elisp`` file that contains all the variables modified by Emacs.
 
-So for the time being this will be the main README for this repo. Anyway, feel free to check my simple, junky Emacs config file.
+And now, after setting up Emacs, feel free to check my simple, junky Emacs config file.
+
+# [Check my Config File!](https://github.com/ElMiamiMan/.emasc.d/emacs.org)
