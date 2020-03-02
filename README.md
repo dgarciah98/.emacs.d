@@ -55,4 +55,4 @@ And lastly I load the ``org`` file along with an ``elisp`` file that contains al
 
 And now, after setting up Emacs, feel free to check my simple, junky Emacs config file.
 
-# [Check my Config File!](https://github.com/ElMiamiMan/.emasc.d/emacs.org)
+# [Check my Config File!](https://github.com/ElMiamiMan/.emacs.d/emacs.org)
