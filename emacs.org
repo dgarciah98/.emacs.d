@@ -3,15 +3,15 @@ Welcome to my Emacs config file!
 
 * Table of Contents 
 :TOC:
-- [[#global-vars][Global Variables]]
+- [[#global-variables][Global Variables]]
 - [[#appearance][Appearance]]
   - [[#all-the-icons][All The Icons]]
   - [[#doom-modeline][Doom Modeline]]
   - [[#doom-themes][Doom Themes]]
   - [[#kaolin-themes][Kaolin Themes]]
 - [[#utilities][Utilities]]
-  - [[#aggressive][Aggressive Indent]]
-  - [[#calfw][Calendar (calfw)]]
+  - [[#aggressive-indent][Aggressive Indent]]
+  - [[#calendar-(calfw)][Calendar (calfw)]]
   - [[#company][Company]]
   - [[#dashboard][Dashboard]]
   - [[#flycheck][Flycheck]]
@@ -369,7 +369,6 @@ Welcome to my Emacs config file!
 #+END_SRC
 
 ** Rust
-
    #+BEGIN_SRC emacs-lisp
      (use-package toml-mode
        :ensure t)
@@ -378,6 +377,6 @@ Welcome to my Emacs config file!
        :hook (rust-mode . cargo-minor-mode))
    #+END_SRC
 
-----
+-----
 
-[[#title][Back to top]]
+* [[#emacsorg][Back to top]]
