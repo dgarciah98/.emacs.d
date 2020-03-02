@@ -11,7 +11,7 @@ Welcome to my Emacs config file!
   - [[#kaolin-themes][Kaolin Themes]]
 - [[#utilities][Utilities]]
   - [[#aggressive-indent][Aggressive Indent]]
-  - [[#calendar-(calfw)][Calendar (calfw)]]
+  - [[#calendar-calfw][Calendar (calfw)]]
   - [[#company][Company]]
   - [[#dashboard][Dashboard]]
   - [[#flycheck][Flycheck]]
