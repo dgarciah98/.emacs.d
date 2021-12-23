@@ -2,7 +2,7 @@
 Welcome to my Emacs config file!
 
 * Table of Contents 
-:TOC:
+
 - [[#global-variables][Global Variables]]
 - [[#appearance][Appearance]]
   - [[#all-the-icons][All The Icons]]
@@ -10,7 +10,6 @@ Welcome to my Emacs config file!
   - [[#doom-themes][Doom Themes]]
   - [[#kaolin-themes][Kaolin Themes]]
 - [[#utilities][Utilities]]
-  - [[#aggressive-indent][Aggressive Indent]]
   - [[#calendar-calfw][Calendar (calfw)]]
   - [[#company][Company]]
   - [[#dashboard][Dashboard]]
@@ -35,22 +34,21 @@ Welcome to my Emacs config file!
 
 * Global Variables
   #+BEGIN_SRC emacs-lisp
-    ;;(global-display-line-numbers-mode)
-    (fset 'yes-or-no-p 'y-or-n-p)
-    (global-auto-revert-mode)
-    (fringe-mode '(nil . 0))
-    (show-paren-mode t)
-    (size-indication-mode t)
-    (scroll-bar-mode -1)
-    (menu-bar-mode -1)
-    (tool-bar-mode -1)
-    (tooltip-mode -1)
-    (column-number-mode t)
-    (electric-layout-mode t)
-    (electric-pair-mode t)
-    (add-to-list 'default-frame-alist '(font . "FuraCode Nerd Font Mono 9"))
-    (set-face-attribute 'default nil :family "FuraCode Nerd Font Mono 9")
-    (set-frame-font "FuraCode Nerd Font Mono 9")
+	(fset 'yes-or-no-p 'y-or-n-p)
+	(global-auto-revert-mode)
+	(fringe-mode '(nil . 0))
+	(show-paren-mode t)
+	(size-indication-mode t)
+	(scroll-bar-mode -1)
+	(menu-bar-mode -1)
+	(tool-bar-mode -1)
+	(tooltip-mode -1)
+	(column-number-mode t)
+	(electric-layout-mode t)
+	(electric-pair-mode t)
+	(set-face-attribute 'default nil
+			    :height 90 
+			    :family "Fira Code Retina")
 #+END_SRC
 
 * Appearance
@@ -109,24 +107,6 @@ Welcome to my Emacs config file!
 #+END_SRC
 
 * Utilities
-** Aggressive Indent
-   
-   #+BEGIN_SRC emacs-lisp
-     ;; (use-package aggressive-indent
-     ;;   :ensure t)
-     ;; :hook
-     ;; ((rust-mode . aggressive-indent-mode)
-     ;;  (cc-mode . aggressive-indent-mode)
-     ;;  (arduino-mode . aggressive-indent-mode)
-     ;;  (emacs-lisp-mode . aggressive-indent-mode)
-     ;;  (sh-mode . aggressive-indent-mode)
-     ;;  (python-mode . aggressive-indent-mode))
-     ;; :custom
-     ;; (aggressive-indent-comments-too t)
-     ;; :config
-     ;; (global-aggressive-indent-mode t))
-   #+END_SRC
-
 ** Calendar (calfw)
 
    #+BEGIN_SRC emacs-lisp
@@ -153,10 +133,14 @@ Welcome to my Emacs config file!
 	     company-idle-delay 0
 	     company-minimum-prefix-length 3)
        (company-quickhelp-mode))
-     (use-package company-lsp
-       :ensure t
-       :commands company-lsp)
-     (push 'company-lsp company-backends)
+	 (use-package company-quickhelp
+	   :ensure t)
+	 (use-package company-quickhelp-terminal
+	   :ensure t)
+	 ;; not supported anymore
+     ;;(use-package company-lsp
+     ;;  :ensure t
+     ;;  :commands company-lsp)     
 #+END_SRC
 
 ** Dashboard
@@ -175,14 +159,27 @@ Welcome to my Emacs config file!
 				(projects . 3)
 				(agenda))
 	      dashboard-center-content t
+	      ;;recentf-exclude '("~/org/calendar")
 	      dashboard-set-init-info t
 	      dashboard-set-footer t
 	      dashboard-show-shortcuts t
 	      dashboard-page-separator "\n\f\n"
 	      show-week-agenda-p t)
        (dashboard-setup-startup-hook)
-       :config)
-       ;;(add-to-list 'dashboard-items '(agenda) t))
+       :config
+       (add-to-list 'dashboard-items '(agenda) t))
+#+END_SRC
+
+** Dimmer
+   #+BEGIN_SRC emacs-lisp
+		  (use-package dimmer
+			:ensure t
+			:config
+			(require 'dimmer)
+			(dimmer-configure-which-key)
+			(dimmer-configure-helm)
+			(dimmer-mode t)
+			(setq dimmer-fraction 0.58))
 #+END_SRC
 
 ** Flycheck
@@ -210,19 +207,36 @@ Welcome to my Emacs config file!
        (helm-autoresize-mode 1))
 #+END_SRC
 
-** LSP
+** Helm-Tramp
+   #+BEGIN_SRC emacs-lisp 
+   (use-package helm-tramp
+     :ensure t
+     :bind ("M-s h" . helm-tramp)
+     :config (setq tramp-default-method "ssh"))
+   #+END_SRC
 
+** LSP
    #+BEGIN_SRC emacs-lisp
      (use-package lsp-mode
        :ensure t
        :init (setq lsp-keymap-prefix "C-c l")
+	   (add-to-list 'exec-path "~/elixir-ls")
        :hook ((lsp-mode . lsp-enable-which-key-integration)
 	      (sh-mode . lsp)
 	      (python-mode . lsp)
 	      (cc-mode . lsp)
 	      (arduino-mode . lsp)
-	      (rust-mode . lsp))
+	      (rust-mode . lsp)
+		  (elixir-mode . lsp)
+		  (typescript-mode . lsp))
        :commands lsp)
+
+	 ;; python server
+	 (use-package lsp-pyright
+	   :ensure t
+	   :hook (python-mode . (lambda ()
+							  (require 'lsp-pyright)
+							  (lsp))))  ; or lsp-deferred
 #+END_SRC
 
    ui
@@ -268,15 +282,16 @@ Welcome to my Emacs config file!
    #+BEGIN_SRC emacs-lisp
      (use-package org
        :ensure t
+	   :if window-system
        :config
        (require 'org-beautify-theme)
-       (setq org-support-shift-select t
-	     org-src-tab-acts-natively t))
+       (setq org-support-shift-select 'always
+			 org-src-tab-acts-natively 'always))
 #+END_SRC
 
 ** Org Calendar
    #+BEGIN_SRC emacs-lisp
-     (load-file "~/.emacs.d/orggcal.el")
+     ;;(load-file "~/.emacs.d/orggcal.el")
 #+END_SRC
 
 ** Page Break Lines
@@ -328,13 +343,34 @@ Welcome to my Emacs config file!
 ** Yasnippet
    #+BEGIN_SRC emacs-lisp
      (use-package yasnippet
-       :ensure ;TODO: 
+       :ensure t 
        :init (yas-global-mode t)
        (put 'downcase-region 'disabled nil)
        (put 'upcase-region 'disabled nil))
      (use-package yasnippet-snippets
        :ensure t)
 #+END_SRC
+
+** Telega
+   #+BEGIN_SRC emacs-lisp
+	 (use-package telega
+	   :ensure t
+	   :load-path "~/.emacs.d/elpa/telega-20200903.1506/telega.el"
+	   :commands (telega)
+	   :defer t
+	   :config
+	   (require 'telega-mnz)
+	   (add-hook 'telega-chat-mode-hook
+			(lambda () 
+			  (set (make-local-variable 'company-backends)
+				   (append '(telega-company-emoji
+							 telega-company-username
+							 telega-company-hashtag)
+						   (when (telega-chat-bot-p telega-chatbuf--chat)
+							 '(telega-company-botcmd))))
+			  (company-mode 1)))
+	   )
+	   #+END_SRC
 
 * Programming
 ** C and its Variants
@@ -344,15 +380,6 @@ Welcome to my Emacs config file!
        :ensure t
        :config
        (add-hook 'c-mode-hook (lambda () (c-set-style "user"))))
-#+END_SRC
-
-** Ciao Prolog
-   
-   i have to use this because of uni pls dont bully
-
-   #+BEGIN_SRC emacs-lisp
-     (if (file-exists-p "~/.ciaoroot/master/ciao_emacs/elisp/ciao-site-file.el")
-	     (load-file "~/.ciaoroot/master/ciao_emacs/elisp/ciao-site-file.el"))
 #+END_SRC
 
 ** PlatformIO
@@ -366,6 +393,20 @@ Welcome to my Emacs config file!
      (use-package platformio-mode
        :ensure t
        :commands (platformio-conditionally-enable))
+#+END_SRC
+
+** Polymode
+   #+BEGIN_SRC emacs-lisp
+	 (use-package poly-markdown
+	   :ensure t)
+	 (use-package poly-org
+	   :ensure t)
+	 (use-package polymode
+	   :ensure t
+	   :mode ("\.md$" . poly-markdown-mode)
+	   :mode ("\.org$" . poly-org-mode)
+	   :config	   
+	   (define-hostmode poly-emacs-lisp-hostmode :mode 'emacs-lisp-mode))  
 #+END_SRC
 
 ** Rust

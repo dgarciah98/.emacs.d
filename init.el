@@ -21,10 +21,11 @@
 
 ;;(load-file "~/.emacs.d/init.el")
 (org-babel-load-file (expand-file-name "emacs.org" user-emacs-directory))
-
+;;(org-babel-tangle)
+;;(load-file "~/.emacs.d/emacs.el")
+;;(byte-recompile-directory user-emacs-directory 0)
 ;; Custom Variables
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
-
 ;;; init.el ends here
