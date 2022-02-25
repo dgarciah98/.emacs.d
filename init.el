@@ -20,7 +20,7 @@
 ;; Main Configuration
 
 ;;(load-file "~/.emacs.d/init.el")
-(org-babel-load-file (expand-file-name "emacs.org" user-emacs-directory))
+(org-babel-load-file (concat user-emacs-directory "emacs.org"))
 ;;(org-babel-tangle)
 ;;(load-file "~/.emacs.d/emacs.el")
 ;;(byte-recompile-directory user-emacs-directory 0)

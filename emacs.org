@@ -107,19 +107,6 @@ Welcome to my Emacs config file!
 #+END_SRC
 
 * Utilities
-** Calendar (calfw)
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package calfw
-       :ensure t
-       :config
-       (require 'calfw)
-       (require 'calfw-org)
-       (setq cfw:org-overwrite-default-keybinding t
-	     calendar-week-start-day 1)
-       :bind ("C-c c" . cfw:open-org-calendar))
-#+END_SRC
-
 ** Company
    
    #+BEGIN_SRC emacs-lisp
@@ -148,38 +135,54 @@ Welcome to my Emacs config file!
    #+BEGIN_SRC emacs-lisp
      (use-package dashboard
        :ensure t
-       ;;:diminish (dashboard-mode)
-       ;;(add-hook 'after-init-hook 'dashboard-refresh-buffer)
-       :init
-       (add-hook 'dashboard-mode-hook (lambda () (page-break-lines-mode 1)))
-       (add-hook 'dashboard-mode-hook (lambda () (nlinum-mode -1)))
-       (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*"))
-	      dashboard-items '((recents . 3)
-				(bookmarks . 3)
-				(projects . 3)
-				(agenda))
-	      dashboard-center-content t
-	      ;;recentf-exclude '("~/org/calendar")
-	      dashboard-set-init-info t
-	      dashboard-set-footer t
-	      dashboard-show-shortcuts t
-	      dashboard-page-separator "\n\f\n"
-	      show-week-agenda-p t)
-       (dashboard-setup-startup-hook)
        :config
-       (add-to-list 'dashboard-items '(agenda) t))
+	   ;;(add-hook 'after-init-hook 'dashboard-refresh-buffer)	   
+	   (add-hook 'dashboard-mode-hook (lambda () (page-break-lines-mode 1)))
+       (add-hook 'dashboard-mode-hook (lambda () (nlinum-mode -1)))	   
+       (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+	   (setq dashboard-items
+			 '(
+			   (recents . 5)
+			   (bookmarks . 5)
+			   (projects . 5)
+			   ))
+		  
+	   (setq dashboard-center-content t)
+	   (setq recentf-exclude '("^/var/folders\\.*"
+							   "COMMIT_EDITMSG\\'"
+							   ".*-autoloads\\.el\\'"
+							   "[/\\]\\.elpa/"))
+	   (setq dashboard-set-init-info t)
+	   (setq dashboard-set-footer t)
+	   (setq dashboard-show-shortcuts t)
+	   ;;(setq dashboard-page-separator "\n\f\n")
+	   (setq dashboard-set-navigator t)
+	   (setq dashboard-navigator-buttons
+			 `(;; line1
+			   ((,(all-the-icons-octicon "mark-github" :height 1.1 :v-adjust 0.0)
+				 "Homepage"
+				 ""
+				 (lambda (&rest _) (browse-url "https://github.com")))
+				(,(all-the-icons-fileicon "emacs" :height 1.1 :v-adjust 0.0)
+				 "Emacs Config"
+				 ""
+				 (lambda (&rest _) (find-file "~/.emacs.d/emacs.org")))
+			  )))
+
+	   (dashboard-setup-startup-hook)
+	   )
 #+END_SRC
 
 ** Dimmer
    #+BEGIN_SRC emacs-lisp
-		  (use-package dimmer
-			:ensure t
-			:config
-			(require 'dimmer)
-			(dimmer-configure-which-key)
-			(dimmer-configure-helm)
-			(dimmer-mode t)
-			(setq dimmer-fraction 0.58))
+     (use-package dimmer
+       :ensure t
+       :config
+       (require 'dimmer)
+       (dimmer-configure-which-key)
+       (dimmer-configure-helm)
+       (dimmer-mode t)
+       (setq dimmer-fraction 0.58))
 #+END_SRC
 
 ** Flycheck
@@ -191,6 +194,13 @@ Welcome to my Emacs config file!
        :ensure t
        :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
 #+END_SRC
+
+** Ivy
+   #+BEGIN_SRC emacs-lisp
+     (use-package ivy
+       :ensure t)
+#+END_SRC
+
 
 ** Helm
    #+BEGIN_SRC emacs-lisp
@@ -220,7 +230,7 @@ Welcome to my Emacs config file!
      (use-package lsp-mode
        :ensure t
        :init (setq lsp-keymap-prefix "C-c l")
-	   (add-to-list 'exec-path "~/elixir-ls")
+	   (add-to-list 'exec-path "~/elixir_ls")
        :hook ((lsp-mode . lsp-enable-which-key-integration)
 	      (sh-mode . lsp)
 	      (python-mode . lsp)
@@ -235,22 +245,24 @@ Welcome to my Emacs config file!
 	 (use-package lsp-pyright
 	   :ensure t
 	   :hook (python-mode . (lambda ()
-							  (require 'lsp-pyright)
-							  (lsp))))  ; or lsp-deferred
+				  (require 'lsp-pyright)
+				  (lsp))))  ; or lsp-deferred
 #+END_SRC
 
-   ui
+   LSP UI for doc windows
 
    #+BEGIN_SRC emacs-lisp
      (use-package lsp-ui
        :ensure t
        :bind (("C-c l i" . lsp-ui-imenu)
 	      ("C-c l f" . lsp-ui-doc-focus-frame)
-	      ("C-c l u" . lsp-ui-doc-unfocus-frame))
+	      ("C-c l u" . lsp-ui-doc-unfocus-frame))  
        :init
        (lsp-ui-mode)
        (lsp-ui-doc-mode)
        (setq lsp-ui-doc-delay 1)
+	   (setq lsp-ui-doc-position 'at-point)
+	   (setq lsp-ui-doc-show-with-cursor t)
        :commands lsp-ui-mode)
 #+END_SRC
 
@@ -258,12 +270,13 @@ Welcome to my Emacs config file!
    #+BEGIN_SRC emacs-lisp
      (use-package neotree
        :ensure t
-       :bind (("<f8>" . neotree-toggle))
+	   :init
        :config
        (setq-default neo-show-hidden-files t)
-       (setq neo-smart-open t
-	     projectile-switch-project-action 'neotree-projectile-action)
-
+       (setq neo-smart-open t)
+	   (setq projectile-switch-project-action 'neotree-projectile-action)
+	   (global-set-key [f8] 'neotree-toggle)
+	   
        ;; Disable line-numbers minor mode for neotree
        (add-hook 'neo-after-create-hook
 		 ;;(lambda (&rest _) (display-line-numbers-mode -1))))
@@ -287,11 +300,6 @@ Welcome to my Emacs config file!
        (require 'org-beautify-theme)
        (setq org-support-shift-select 'always
 			 org-src-tab-acts-natively 'always))
-#+END_SRC
-
-** Org Calendar
-   #+BEGIN_SRC emacs-lisp
-     ;;(load-file "~/.emacs.d/orggcal.el")
 #+END_SRC
 
 ** Page Break Lines
@@ -355,21 +363,35 @@ Welcome to my Emacs config file!
    #+BEGIN_SRC emacs-lisp
 	 (use-package telega
 	   :ensure t
-	   :load-path "~/.emacs.d/elpa/telega-20200903.1506/telega.el"
 	   :commands (telega)
 	   :defer t
 	   :config
+	   (setq telega-emoji-company-backend 'telega-company-emoji)
+
+	   ;; Code blocks
 	   (require 'telega-mnz)
-	   (add-hook 'telega-chat-mode-hook
-			(lambda () 
-			  (set (make-local-variable 'company-backends)
-				   (append '(telega-company-emoji
-							 telega-company-username
-							 telega-company-hashtag)
-						   (when (telega-chat-bot-p telega-chatbuf--chat)
-							 '(telega-company-botcmd))))
-			  (company-mode 1)))
+	   
+	   ;; Chats in Emacs Dashboard
+	   (require 'telega-dashboard)
+	   (add-to-list 'dashboard-items '(telega-chats . 3))
+
+	   ;; Emacs Stories
+	   (require 'telega-stories)
+	   (telega-stories-mode 1)
+	   (define-key telega-root-mode-map (kbd "v e") 'telega-view-emacs-stories)
+	   
 	   )
+	   ;; Chatbuf completion
+	   ;; (add-hook 'telega-chat-mode-hook
+	   ;; 	     (lambda () 
+	   ;; 	       (set (make-local-variable 'company-backends)
+	   ;; 		    (append '(telega-company-emoji
+	   ;; 			      telega-company-username
+	   ;; 			      telega-company-hashtag)
+	   ;; 			    (when (telega-chat-bot-p telega-chatbuf--chat)
+	   ;; 			      '(telega-company-botcmd))))
+	   ;; 	       (company-mode 1)))
+	   
 	   #+END_SRC
 
 * Programming
